@@ -17,8 +17,13 @@ class SampleInteractor(
      * 5) берет 3 первых числа
      * 6) возвращает результат
      */
-    fun task1(): Flow<String> {
-        return flowOf()
+    fun task1(flow: Flow<Int>): Flow<String> {
+        return flow
+            .map {it * 5}
+            .filter { it > 20 }
+            .filter { it%2 != 0 }
+            .map { "$it won" }
+            .take(3)
     }
 
     /**
@@ -28,8 +33,25 @@ class SampleInteractor(
      * Если входное число делится на 15 - эмитим само число и после него эмитим строку FizzBuzz
      * Если число не делится на 3,5,15 - эмитим само число
      */
-    fun task2(): Flow<String> {
-        return flowOf()
+    fun task2(flow: Flow<Int>): Flow<String> {
+        return flow
+            .transform {
+                when {
+                    it%15 == 0 -> {
+                        emit(it.toString())
+                        emit("FizzBuzz")
+                    }
+                    it%5 == 0 -> {
+                        emit(it.toString())
+                        emit("Buzz")
+                    }
+                    it%3 == 0 -> {
+                        emit(it.toString())
+                        emit("Fizz")
+                    }
+                    else -> emit(it.toString())
+                }
+            }
     }
 
     /**
@@ -37,8 +59,12 @@ class SampleInteractor(
      * где f1 айтем из первого флоу, f2 айтем из второго флоу.
      * Если айтемы в одно из флоу кончились то результирующий флоу также должен закончится
      */
-    fun task3(): Flow<Pair<String, String>> {
-        return flowOf()
+    fun task3(flow1: Flow<String>, flow2: Flow<String>): Flow<Pair<String, String>> {
+        return flow1
+            .zip(flow2) {a,b ->
+                a to b
+            }
+
     }
 
     /**
@@ -47,7 +73,12 @@ class SampleInteractor(
      * Если тип эксепшена != IllegalArgumentException, пробросьте его дальше
      * При любом исходе, будь то выброс исключения или успешная отработка функции вызовите метод dotsRepository.completed()
      */
-    fun task4(): Flow<Int> {
-        return flowOf()
+    fun task4(flow: Flow<Int>): Flow<Int> {
+        return flow
+            .catch() { e ->
+                if (e is IllegalArgumentException) emit(-1)
+                else throw e
+            }
+            .onCompletion { sampleRepository.completed() }
     }
 }

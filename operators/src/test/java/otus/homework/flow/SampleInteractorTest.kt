@@ -25,8 +25,9 @@ class SampleInteractorTest {
         every { dotsRepository.produceNumbers() } returns flowOf(7, 12, 4, 8, 11, 5, 7, 16, 99, 1)
 
         val expected = listOf("35 won", "55 won", "25 won")
-        val actual = dotsInteractor.task1().toList()
-
+        val actual = dotsInteractor
+            .task1(dotsRepository.produceNumbers())
+            .toList()
         assertEquals(expected, actual)
     }
 
@@ -67,7 +68,7 @@ class SampleInteractorTest {
             "21",
             "Fizz"
         )
-        val actual = dotsInteractor.task2().toList()
+        val actual = dotsInteractor.task2(dotsRepository.produceNumbers()).toList()
 
         assertEquals(expected, actual)
     }
@@ -84,7 +85,7 @@ class SampleInteractorTest {
         every { dotsRepository.produceForms() } returns flowOf("Circle", "Square", "Triangle")
 
         val expected = listOf("Red" to "Circle", "Green" to "Square", "Blue" to "Triangle")
-        val actual = dotsInteractor.task3().toList()
+        val actual = dotsInteractor.task3(dotsRepository.produceColors(), dotsRepository.produceForms()).toList()
 
         assertEquals(expected, actual)
     }
@@ -98,7 +99,7 @@ class SampleInteractorTest {
         }
 
         val expected = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-        val actual = dotsInteractor.task4().toList()
+        val actual = dotsInteractor.task4(dotsRepository.produceNumbers()).toList()
 
         assertEquals(expected, actual)
 
@@ -118,7 +119,7 @@ class SampleInteractorTest {
         }
 
         val expected = listOf(1, 2, 3, 4, -1)
-        val actual = dotsInteractor.task4().toList()
+        val actual = dotsInteractor.task4(dotsRepository.produceNumbers()).toList()
 
         assertEquals(expected, actual)
 
@@ -139,7 +140,7 @@ class SampleInteractorTest {
 
         assertThrows(SecurityException::class.java){
             runBlockingTest {
-                dotsInteractor.task4().toList()
+                dotsInteractor.task4(dotsRepository.produceNumbers()).toList()
             }
 
         }
